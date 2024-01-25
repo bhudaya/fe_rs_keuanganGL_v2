@@ -21,33 +21,12 @@ class COAController extends Controller
         //$apiUrl = 'http://localhost:8000/api/coa_list';
 
         $apiUrl = config('api.be_api_url') ;
-        $apiUrlLogin =  $apiUrl ."login";
         $apiUrlCoa =  $apiUrl ."coa_list";
-        $client = new Client();
 
-        $headersLogin = [
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json',            
-        ];       
 
-        try {
 
-            $dataLogin = [
-                'email' =>  config('api.be_username'),
-                'password' =>  config('api.be_password') ,
-            ];
-
-            $respLogin = $client->post($apiUrlLogin, [
-                'headers' => $headersLogin,
-                'json' => $dataLogin,
-            ]);
-
-            $respBody = $respLogin->getBody()->getContents();
-            $respBodyArray = json_decode($respBody,true);
-
-            $token  = $respBodyArray['authorisation']['token'];
-            //session()->put('sess_token', $token);
-            session(['sess_token' => $token]);
+       
+            //---- token BE get from login ------
             $this->token = session('sess_token');;        
 
 
@@ -57,7 +36,6 @@ class COAController extends Controller
                 'Authorization' => 'Bearer '.$this->token ,
                 
             ];
-
 
             $response = $client->get($apiUrlCoa, [
                 'headers' => $headers,
