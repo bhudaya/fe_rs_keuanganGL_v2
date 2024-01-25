@@ -12,6 +12,10 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\RoomsController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\EmployeeController;
+
+use App\Http\Controllers\COAController;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -79,6 +83,27 @@ Route::controller(ResetPasswordController::class)->group(function () {
     Route::get('reset-password/{token}', 'getPassword');
     Route::post('reset-password', 'updatePassword');
 });
+
+// ----------------------------- booking -----------------------------//
+Route::controller(COAController::class)->group(function () {
+    Route::get('form/allcoa', 'allcoa')->name('form/allcoa')->middleware('auth');
+    Route::get('form/coa/edit/{bkg_id}', 'coaEdit')->middleware('auth');
+    Route::get('form/coa/add', 'coaAdd')->middleware('auth')->name('form/coa/add');
+    Route::post('form/coa/save', 'saveRecord')->middleware('auth')->name('form/coa/save');
+    Route::post('form/coa/update', 'updateRecord')->middleware('auth')->name('form/coa/update');
+    Route::post('form/coa/delete', 'deleteRecord')->middleware('auth')->name('form/coa/delete');
+});
+
+
+
+
+
+
+
+
+
+
+
 
 // ----------------------------- booking -----------------------------//
 Route::controller(BookingController::class)->group(function () {
