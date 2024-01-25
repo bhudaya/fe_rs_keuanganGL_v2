@@ -9,7 +9,7 @@
                     <div class="col">
                         <div class="mt-5">
                             <h4 class="card-title float-left mt-2">COA</h4>
-                            <a href="{{ route('form/coa/add') }}" class="btn btn-primary float-right veiwbutton ">Add Booking</a>
+                            <a href="{{ route('form/coa/add') }}" class="btn btn-primary float-right veiwbutton ">Add COA</a>
                         </div>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
                                                 </h2>
                                             </td>
                                             <td>{{ $bookings['AccountType'] }}</td>
-                                            <td>{{ $bookings['ParentID'] }}</td>
+                                            <td>{{ $bookings['AccountCode'] }}</td>
                                            
                                             <td>
                                                 <div class="actions"> <a href="#" class="btn btn-sm bg-success-light mr-2">Active</a> </div>

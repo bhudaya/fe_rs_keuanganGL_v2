@@ -8,46 +8,68 @@ use App\Models\Booking;
 use DB;
 use GuzzleHttp\Client;
 
+
 class COAController extends Controller
 {
+    private $token ; 
+
     // view page all booking
     public function allcoa()
     {
         //$allBookings = DB::table('bookings')->get();
         //return view('formcoa.allcoa',compact('allBookings'));
+        //$apiUrl = 'http://localhost:8000/api/coa_list';
 
-        $apiUrl = 'http://localhost:8000/api/coa_list';
-
-         $data = [
-            'key1' => 'value1',
-            'key2' => 'value2',
-        ];
-
-        $headers = [
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0L3JzX2tldWFuZ2FuR0xfVjIvYXBpL2xvZ2luIiwiaWF0IjoxNzA2MTY4Mjg5LCJleHAiOjE3MDYxNzE4ODksIm5iZiI6MTcwNjE2ODI4OSwianRpIjoicUtpbDFlaVplNjRlTjNJUCIsInN1YiI6IjUiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.3Z8FGN6qTAaLT9QGszg02p-_REa22oP9EaZY3qoFZII',
-            
-        ];
-
-        // Membuat objek Guzzle HTTP client
+        $apiUrl = config('api.be_api_url') ;
+        $apiUrlLogin =  $apiUrl ."login";
+        $apiUrlCoa =  $apiUrl ."coa_list";
         $client = new Client();
 
+        $headersLogin = [
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',            
+        ];       
+
         try {
-            $response = $client->get($apiUrl, [
+
+            $dataLogin = [
+                'email' =>  config('api.be_username'),
+                'password' =>  config('api.be_password') ,
+            ];
+
+            $respLogin = $client->post($apiUrlLogin, [
+                'headers' => $headersLogin,
+                'json' => $dataLogin,
+            ]);
+
+            $respBody = $respLogin->getBody()->getContents();
+            $respBodyArray = json_decode($respBody,true);
+
+            $token  = $respBodyArray['authorisation']['token'];
+            //session()->put('sess_token', $token);
+            session(['sess_token' => $token]);
+            $this->token = session('sess_token');;        
+
+
+            $headers = [
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer '.$this->token ,
+                
+            ];
+
+
+            $response = $client->get($apiUrlCoa, [
                 'headers' => $headers,
-                'query' => $data,
+                //'query' => $data,
             ]);
 
             $apiResponse = $response->getBody()->getContents();
 
-
             $decodedApiResponse = json_decode($apiResponse, true);
 
-
-
             //return response()->json($decodedApiResponse);
-
-            print_r( json_encode($decodedApiResponse['data']));
+            //print_r( json_encode($decodedApiResponse['data']));
 
 
             $allBookings = $decodedApiResponse['data'] ;
